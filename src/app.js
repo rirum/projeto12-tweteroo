@@ -14,7 +14,7 @@ const tweets = []; // array tweets
 // res -> envia infos
 
 server.post("/sign-up", (req, res) => {
-  const {username, avatar} = req.body; // receber pelo body da request o username e o avatar
+  const { username, avatar } = req.body; // receber pelo body da request o username e o avatar
   const userData = {username, avatar};
   users.push(userData); // salvar o usuário na array de usuarios
   console.log(users); 
@@ -22,21 +22,20 @@ server.post("/sign-up", (req, res) => {
 })
 
 server.post("/tweets", (req, res) => {
-  const { username } = req.headers;
-  console.log(req.headers);
-  const { tweet } = req.body;
+  const tweet  = req.body;
   
-  const user = users.find(user => user.username === username);
+  const user = users.find(user => user.username === tweet.username);
   console.log(user)
 
-  if(!user) {
-    return res.status(401).send("UNAUTHORIZED");
-  }
-
-  tweets.push({ username, tweet });
-
-  res.status(201).send("OK") 
-})
+  if(user) {
+    tweet.avatar = user.avatar;
+    tweets.push(tweet);
+    res.status(201).send("OK")
+    }else {
+      return res.status(401).send("UNAUTHORIZED");
+    }
+   
+  })
 
 server.get("/tweets", (req, res) => {
   if (tweets.length > 10) {
